@@ -67,10 +67,10 @@ class Company {
     return companiesRes.rows;
   }
 
-  static async findAllFiltered(queryStrings) {
+  static async findAllFiltered(nameLike, minEmp, maxEmp) {
     // must accept nameLike, maxEmp, minEmp
       // these can be undefined, will be checked in function 
-      
+
     // nameLike = 'net', maxEmp = '', minEmp = 20
 
     // create whereClause function invoke separate method to 

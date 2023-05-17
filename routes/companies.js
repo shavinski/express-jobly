@@ -55,9 +55,13 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   // let companies;
 
+  // req.query.nameLike
+  // req.query.minEmp
+  // req.query.maxEmp
+
   // if there is something in query string 
     // pluck out query strings either nameLike, minEmp, maxEmp
-    // companies = Company.findAllFiltered([nameLike, minEmp, maxEmp])
+    // companies = Company.findAllFiltered(nameLike, minEmp, maxEmp)
   // else if no query strings 
     // companies = Company.findAll() 
 

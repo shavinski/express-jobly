@@ -67,6 +67,36 @@ class Company {
     return companiesRes.rows;
   }
 
+  static async findAllFiltered(queryStrings) {
+    // must accept nameLike, maxEmp, minEmp
+      // these can be undefined, will be checked in function 
+      
+    // nameLike = 'net', maxEmp = '', minEmp = 20
+
+    // create whereClause function invoke separate method to 
+    // check which values in queryStrings are undefined or defined
+      // with defined values create where clause statement 
+      // and then place inside SQL query
+
+      // output {"WHERE": nameLike = $1, minEmp = $2,
+      //          "values": ["net", 20] } 
+
+     // our WHERE in sql query will be WHERE ${whereClause.WHERE}
+     // at end of SQL query [whereClause.values]
+
+    const companiesRes = await db.query(`
+        SELECT handle,
+               name,
+               description,
+               num_employees AS "numEmployees",
+               logo_url      AS "logoUrl"
+        FROM companies
+        WHERE
+        ORDER BY name`, 
+        [...queryStrings]);
+    return companiesRes.rows;
+  }
+
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }

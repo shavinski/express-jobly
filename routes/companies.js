@@ -53,6 +53,14 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
+  // let companies;
+
+  // if there is something in query string 
+    // pluck out query strings either nameLike, minEmp, maxEmp
+    // companies = Company.findAllFiltered([nameLike, minEmp, maxEmp])
+  // else if no query strings 
+    // companies = Company.findAll() 
+
   const companies = await Company.findAll();
   return res.json({ companies });
 });

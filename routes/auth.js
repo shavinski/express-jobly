@@ -25,6 +25,7 @@ router.post("/token", async function (req, res, next) {
     userAuthSchema,
     {required: true}
   );
+  
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);

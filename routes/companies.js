@@ -25,11 +25,13 @@ const router = new express.Router();
  */
 
 router.post("/", ensureLoggedIn, async function (req, res, next) {
+
   const validator = jsonschema.validate(
     req.body,
     companyNewSchema,
     {required: true}
   );
+
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);

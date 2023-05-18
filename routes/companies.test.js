@@ -99,7 +99,8 @@ describe("GET /companies", function () {
   test("all query strings", async function () {
     const resp = await request(app).get(
       "/companies?minEmployees=1&maxEmployees=3&nameLike=c");
-    //TODO: test status code with integration tests
+    
+    expect(resp.statusCode).toEqual(200);
     expect(resp.body).toEqual({
       companies:
           [

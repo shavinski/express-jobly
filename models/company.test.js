@@ -58,7 +58,7 @@ describe("create", function () {
 
 /************************************** _whereClauseGen */
 describe("_whereClauseGen", function()  {
-  test("returns correct object with where clause and values array",
+  test("returns correct object with all params passed in",
   function () {
     let whereClause = Company._whereClauseGen(5, 50, "Rithm");
     expect(whereClause).toEqual(
@@ -76,8 +76,9 @@ describe("_whereClauseGen", function()  {
         { where: '', values: [] }
       )
   });
-  //TODO: update test name
-  test("returns empty object", function () {
+  
+  test("returns correct object with only ints passed in", 
+  function () {
       let whereClause = Company._whereClauseGen(1, 20);
       expect(whereClause).toEqual(
         {

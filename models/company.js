@@ -87,7 +87,6 @@ class Company {
    *      values: [5, 50, 'apple']
    *    }
   */
- //TODO: destructure single object in parameter
   static _whereClauseGen(minEmployees, maxEmployees, nameLike) {
     let where = []
     let values = [];

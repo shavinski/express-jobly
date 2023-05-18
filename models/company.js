@@ -58,9 +58,10 @@ class Company {
   static async findAll(searchQuery) {
     const { minEmployees, maxEmployees, nameLike, } = searchQuery;
 
-    const { where, values } =
+    const { where, values } = 
     this._whereClauseGen(minEmployees, maxEmployees, nameLike);
 
+    console.log(values);
     const companiesRes = await db.query(`
         SELECT handle,
                name,
@@ -69,9 +70,10 @@ class Company {
                logo_url      AS "logoUrl"
         FROM companies
         ${where}
-        ORDER BY name`
-        `${values}`
+        ORDER BY name`,
+        values
         );
+
     return companiesRes.rows;
   }
 
@@ -83,7 +85,7 @@ class Company {
    *      values: [5, 50, 'apple']
    *    }
   */
-  _whereClauseGen(minEmployees, maxEmployees, nameLike) {
+  static _whereClauseGen(minEmployees, maxEmployees, nameLike) {
     let where = []
     let values = [];
 
@@ -97,8 +99,8 @@ class Company {
     }
 
     if (nameLike !== undefined) {
-      values.push(nameLike);
-      where.push(`name ILIKE = $${values.length}`);
+      values.push(`%${nameLike}%`);
+      where.push(`name ILIKE $${values.length}`);
     }
 
     let whereClause = where.length > 0 ? "WHERE " + where.join(" AND ") : "";

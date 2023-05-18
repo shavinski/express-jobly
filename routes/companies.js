@@ -30,7 +30,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     companyNewSchema,
-    {required: true}
+    { required: true }
   );
 
   if (!validator.valid) {
@@ -54,13 +54,24 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  // if min or max are not undefined, convert to number
-  // If the minEmployees parameter is greater than the maxEmployees parameter,
-  //  respond with a 400 error with an appropriate message.
+  const queryStrings = req.query;
+
+  if (queryStrings.minEmployees !== undefined) {
+    queryStrings.minEmployees = Number(queryStrings.minEmployees)
+  }
+
+  if (queryStrings.maxEmployees !== undefined) {
+    queryStrings.maxEmployees = Number(queryStrings.maxEmployees)
+  }
+
+  if (queryStrings.minEmployees > queryStrings.maxEmployees) {
+    throw new BadRequestError('Min cannot be greater than max');
+  }
+
   const validator = jsonschema.validate(
-    req.query,
+    queryStrings,
     companyFilterSchema,
-    {required: true}
+    { required: true }
   );
 
   if (!validator.valid) {
@@ -68,7 +79,7 @@ router.get("/", async function (req, res, next) {
     throw new BadRequestError(errs);
   }
 
- const companies = await Company.findAll(req.query);
+  const companies = await Company.findAll(queryStrings);
 
   return res.json({ companies });
 });
@@ -101,7 +112,7 @@ router.patch("/:handle", ensureLoggedIn, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     companyUpdateSchema,
-    {required:true}
+    { required: true }
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);

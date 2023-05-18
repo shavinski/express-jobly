@@ -54,22 +54,22 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  const queryStrings = req.query;
+  const queryParams = req.query;
 
-  if (queryStrings.minEmployees !== undefined) {
-    queryStrings.minEmployees = Number(queryStrings.minEmployees)
+  if (queryParams.minEmployees !== undefined) {
+    queryParams.minEmployees = Number(queryParams.minEmployees)
   }
 
-  if (queryStrings.maxEmployees !== undefined) {
-    queryStrings.maxEmployees = Number(queryStrings.maxEmployees)
+  if (queryParams.maxEmployees !== undefined) {
+    queryParams.maxEmployees = Number(queryParams.maxEmployees)
   }
 
-  if (queryStrings.minEmployees > queryStrings.maxEmployees) {
+  if (queryParams.minEmployees > queryParams.maxEmployees) {
     throw new BadRequestError('Min cannot be greater than max');
   }
 
   const validator = jsonschema.validate(
-    queryStrings,
+    queryParams,
     companyFilterSchema,
     { required: true }
   );
@@ -79,7 +79,7 @@ router.get("/", async function (req, res, next) {
     throw new BadRequestError(errs);
   }
 
-  const companies = await Company.findAll(queryStrings);
+  const companies = await Company.findAll(queryParams);
 
   return res.json({ companies });
 });

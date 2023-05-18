@@ -11,6 +11,7 @@ const Company = require("../models/company");
 
 const companyNewSchema = require("../schemas/companyNew.json");
 const companyUpdateSchema = require("../schemas/companyUpdate.json");
+const companyFilterSchema = require("../schemas/companyFilter.json");
 
 const router = new express.Router();
 
@@ -53,19 +54,20 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  // let companies;
+  // if min or max are not undefined, convert to number
+  const validator = jsonschema.validate(
+    req.query,
+    companyFilterSchema,
+    {required: true}
+  );
 
-  // req.query.nameLike
-  // req.query.minEmp
-  // req.query.maxEmp
+  if (!validator.valid) {
+    const errs = validator.errors.map(e => e.stack);
+    throw new BadRequestError(errs);
+  }
 
-  // if there is something in query string 
-    // pluck out query strings either nameLike, minEmp, maxEmp
-    // companies = Company.findAllFiltered(nameLike, minEmp, maxEmp)
-  // else if no query strings 
-    // companies = Company.findAll() 
+ const companies = await Company.findAll(req.query);
 
-  const companies = await Company.findAll();
   return res.json({ companies });
 });
 

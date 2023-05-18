@@ -55,34 +55,11 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll() {
-    const companiesRes = await db.query(`
-        SELECT handle,
-               name,
-               description,
-               num_employees AS "numEmployees",
-               logo_url      AS "logoUrl"
-        FROM companies
-        ORDER BY name`);
-    return companiesRes.rows;
-  }
+  static async findAll(searchQuery) {
+    const { minEmployees, maxEmployees, nameLike, } = searchQuery;
 
-  static async findAllFiltered(nameLike, minEmp, maxEmp) {
-    // must accept nameLike, maxEmp, minEmp
-      // these can be undefined, will be checked in function 
-
-    // nameLike = 'net', maxEmp = '', minEmp = 20
-
-    // create whereClause function invoke separate method to 
-    // check which values in queryStrings are undefined or defined
-      // with defined values create where clause statement 
-      // and then place inside SQL query
-
-      // output {"WHERE": nameLike = $1, minEmp = $2,
-      //          "values": ["net", 20] } 
-
-     // our WHERE in sql query will be WHERE ${whereClause.WHERE}
-     // at end of SQL query [whereClause.values]
+    const { where, values } =
+    this._whereClauseGen(minEmployees, maxEmployees, nameLike);
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -91,11 +68,48 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies
-        WHERE
-        ORDER BY name`, 
-        [...queryStrings]);
+        ${where}
+        ORDER BY name`
+        `${values}`
+        );
     return companiesRes.rows;
   }
+
+  /** Generate a where clause and value object.
+   *
+   * returns:
+   *    {
+   *      where: '"minEmployees"=$1, "maxEmployees"=$2, "nameLike"=$3,'
+   *      values: [5, 50, 'apple']
+   *    }
+  */
+  _whereClauseGen(minEmployees, maxEmployees, nameLike) {
+    let where = []
+    let values = [];
+
+    if (minEmployees !== undefined) {
+      values.push(minEmployees);
+      where.push(`num_employees >= $${values.length}`);
+    }
+    if (maxEmployees !== undefined) {
+      values.push(maxEmployees);
+      where.push(`num_employees <= $${values.length}`);
+    }
+
+    if (nameLike !== undefined) {
+      values.push(nameLike);
+      where.push(`name ILIKE = $${values.length}`);
+    }
+
+    let whereClause = where.length > 0 ? "WHERE " + where.join(" AND ") : "";
+
+    return {
+      where: whereClause,
+      values
+    }
+  }
+
+
 
   /** Given a company handle, return data about company.
    *

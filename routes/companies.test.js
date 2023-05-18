@@ -99,7 +99,7 @@ describe("GET /companies", function () {
   test("all query strings", async function () {
     const resp = await request(app).get(
       "/companies?minEmployees=1&maxEmployees=3&nameLike=c");
-
+    //TODO: test status code with integration tests
     expect(resp.body).toEqual({
       companies:
           [
@@ -131,19 +131,20 @@ describe("GET /companies", function () {
   test("min employees greater than max employees", async function () {
     const resp = await request(app).get(
       "/companies?minEmployees=3&maxEmployees=1");
-      
+
       expect(resp.statusCode).toEqual(400);
-      expect(resp.body.error.message).toEqual("Min cannot be greater than max"); 
+      expect(resp.body.error.message).toEqual("Min cannot be greater than max");
   });
 
-  test("test schema with all integers with invalid inputs", async function () {
-    const min = 'min';
-
-    //FIXME: GET TEST TO WORK
+  test("test schema with invalid inputs", async function () {
     const resp = await request(app).get(
-      `/companies?minEmployees=${min}&maxEmployees=1`);
-      
+      `/companies?minEmployees=wrong&maxEmployees=wrong`);
+
       expect(resp.statusCode).toEqual(400);
+      expect(resp.body.error.message).toEqual(
+        ["instance.minEmployees is not of a type(s) integer",
+        "instance.maxEmployees is not of a type(s) integer"]
+      );
   });
 });
 
@@ -266,3 +267,4 @@ describe("DELETE /companies/:handle", function () {
     expect(resp.statusCode).toEqual(404);
   });
 });
+

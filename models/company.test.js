@@ -56,6 +56,38 @@ describe("create", function () {
   });
 });
 
+/************************************** _whereClauseGen */
+describe("_whereClauseGen", function()  {
+  test("returns correct object with where clause and values array",
+  function () {
+    let whereClause = Company._whereClauseGen(5, 50, "Rithm");
+    expect(whereClause).toEqual(
+      {
+        where:
+        'WHERE num_employees >= $1 AND num_employees <= $2 AND name ILIKE $3',
+        values: [ 5, 50, '%Rithm%' ]
+      }
+    )
+  });
+
+  test("returns empty object", function () {
+      let whereClause = Company._whereClauseGen();
+      expect(whereClause).toEqual(
+        { where: '', values: [] }
+      )
+  });
+  //TODO: update test name
+  test("returns empty object", function () {
+      let whereClause = Company._whereClauseGen(1, 20);
+      expect(whereClause).toEqual(
+        {
+          where: 'WHERE num_employees >= $1 AND num_employees <= $2',
+          values: [ 1, 20 ]
+        }
+      )
+  });
+});
+
 /************************************** findAll */
 
 describe("findAll", function () {

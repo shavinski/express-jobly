@@ -55,13 +55,12 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll(searchQuery) {
+  static async findAll(searchQuery = {}) {
     const { minEmployees, maxEmployees, nameLike, } = searchQuery;
 
-    const { where, values } = 
+    const { where, values } =
     this._whereClauseGen(minEmployees, maxEmployees, nameLike);
 
-    console.log(values);
     const companiesRes = await db.query(`
         SELECT handle,
                name,
@@ -72,12 +71,15 @@ class Company {
         ${where}
         ORDER BY name`,
         values
-        );
+    );
 
     return companiesRes.rows;
   }
 
-  /** Generate a where clause and value object.
+  /** Generate an object containing a SQL where clause and a values array.
+   *
+   * Accepts three search query parameters:
+   *   minEmployees(int), maxEmployees(int), nameLike(string)
    *
    * returns:
    *    {
@@ -85,6 +87,7 @@ class Company {
    *      values: [5, 50, 'apple']
    *    }
   */
+ //TODO: destructure single object in parameter
   static _whereClauseGen(minEmployees, maxEmployees, nameLike) {
     let where = []
     let values = [];

@@ -55,6 +55,8 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 
 router.get("/", async function (req, res, next) {
   // if min or max are not undefined, convert to number
+  // If the minEmployees parameter is greater than the maxEmployees parameter,
+  //  respond with a 400 error with an appropriate message.
   const validator = jsonschema.validate(
     req.query,
     companyFilterSchema,

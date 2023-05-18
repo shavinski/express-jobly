@@ -12,6 +12,7 @@ const {
   commonAfterEach,
   commonAfterAll,
   u1Token,
+  u4Token
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -33,7 +34,7 @@ describe("POST /users", function () {
           email: "new@email.com",
           isAdmin: false,
         })
-        .set("authorization", `Bearer ${u1Token}`);
+        .set("authorization", `Bearer ${u4Token}`);
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
       user: {
@@ -57,7 +58,7 @@ describe("POST /users", function () {
           email: "new@email.com",
           isAdmin: true,
         })
-        .set("authorization", `Bearer ${u1Token}`);
+        .set("authorization", `Bearer ${u4Token}`);
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
       user: {
@@ -68,6 +69,42 @@ describe("POST /users", function () {
         isAdmin: true,
       }, token: expect.any(String),
     });
+  });
+
+  test("does not work for non-admin: create admin", async function () {
+    const resp = await request(app)
+        .post("/users")
+        .send({
+          username: "u-new",
+          firstName: "First-new",
+          lastName: "Last-newL",
+          password: "password-new",
+          email: "new@email.com",
+          isAdmin: true,
+        })
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+    expect(resp.body.error.message).toEqual(
+      "Unauthorized"
+    );
+  });
+
+  test("does not work for non-admin: create non-admin", async function () {
+    const resp = await request(app)
+        .post("/users")
+        .send({
+          username: "u-new",
+          firstName: "First-new",
+          lastName: "Last-newL",
+          password: "password-new",
+          email: "new@email.com",
+          isAdmin: false,
+        })
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+    expect(resp.body.error.message).toEqual(
+      "Unauthorized"
+    );
   });
 
   test("unauth for anon", async function () {
@@ -90,7 +127,7 @@ describe("POST /users", function () {
         .send({
           username: "u-new",
         })
-        .set("authorization", `Bearer ${u1Token}`);
+        .set("authorization", `Bearer ${u4Token}`);
     expect(resp.statusCode).toEqual(400);
   });
 
@@ -105,7 +142,7 @@ describe("POST /users", function () {
           email: "not-an-email",
           isAdmin: true,
         })
-        .set("authorization", `Bearer ${u1Token}`);
+        .set("authorization", `Bearer ${u4Token}`);
     expect(resp.statusCode).toEqual(400);
   });
 });

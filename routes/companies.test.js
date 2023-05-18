@@ -95,6 +95,56 @@ describe("GET /companies", function () {
           ],
     });
   });
+
+  test("all query strings", async function () {
+    const resp = await request(app).get(
+      "/companies?minEmployees=1&maxEmployees=3&nameLike=c");
+
+    expect(resp.body).toEqual({
+      companies:
+          [
+            {
+              handle: "c1",
+              name: "C1",
+              description: "Desc1",
+              numEmployees: 1,
+              logoUrl: "http://c1.img",
+            },
+            {
+              handle: "c2",
+              name: "C2",
+              description: "Desc2",
+              numEmployees: 2,
+              logoUrl: "http://c2.img",
+            },
+            {
+              handle: "c3",
+              name: "C3",
+              description: "Desc3",
+              numEmployees: 3,
+              logoUrl: "http://c3.img",
+            },
+          ],
+    });
+  });
+
+  test("min employees greater than max employees", async function () {
+    const resp = await request(app).get(
+      "/companies?minEmployees=3&maxEmployees=1");
+      
+      expect(resp.statusCode).toEqual(400);
+      expect(resp.body.error.message).toEqual("Min cannot be greater than max"); 
+  });
+
+  test("test schema with all integers with invalid inputs", async function () {
+    const min = 'min';
+
+    //FIXME: GET TEST TO WORK
+    const resp = await request(app).get(
+      `/companies?minEmployees=${min}&maxEmployees=1`);
+      
+      expect(resp.statusCode).toEqual(400);
+  });
 });
 
 /************************************** GET /companies/:handle */

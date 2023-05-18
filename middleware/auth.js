@@ -42,14 +42,17 @@ function ensureLoggedIn(req, res, next) {
   if (res.locals.user?.username) return next();
   throw new UnauthorizedError();
 }
+//TODO: grab ensureloggedin logic and put inside if statement, to not use
+  // two pieces of middleware and add optional chaining
 
-/** Middleware to use when a user must be admin
+/** Middleware to use when a user must be admin.
  *
  * If not, throw Unauthorized.
  */
 
 function ensureAdmin(req, res, next) {
   console.log('\n user object ', res.locals.user, '\n');
+
   if (res.locals.user.isAdmin === true) {
     return next();
   }
@@ -62,7 +65,7 @@ function ensureAdmin(req, res, next) {
  *
  * If not, throw Unauthorized.
 */
-
+//TODO: test line 76
 function ensureCorrectUserOrAdmin(req, res, next) {
   console.log('\n user object ', res.locals.user, '\n');
   if (res.locals.user.username === req.params.username

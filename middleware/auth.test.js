@@ -68,3 +68,5 @@ describe("ensureLoggedIn", function () {
         .toThrow(UnauthorizedError);
   });
 });
+
+//TODO: write tests for ensureAdmin/ensureAdminOrCorrectUser

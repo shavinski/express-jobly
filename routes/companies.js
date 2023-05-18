@@ -24,7 +24,7 @@ const router = new express.Router();
  *
  * Authorization required: login and admin
  */
-
+//TODO: use one piece of middleware
 router.post("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
 
   const validator = jsonschema.validate(
@@ -107,7 +107,7 @@ router.get("/:handle", async function (req, res, next) {
  *
  * Authorization required: login and admin
  */
-
+//TODO: just use one piece of middleware
 router.patch("/:handle", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
@@ -127,7 +127,7 @@ router.patch("/:handle", ensureLoggedIn, ensureAdmin, async function (req, res, 
  *
  * Authorization: login and admin
  */
-
+//TODO: use one piece of middleware
 router.delete("/:handle", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
   await Company.remove(req.params.handle);
   return res.json({ deleted: req.params.handle });

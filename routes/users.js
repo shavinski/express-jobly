@@ -29,7 +29,7 @@ const router = express.Router();
  *
  * Authorization required: login, admin
  **/
-
+//TODO: use one piece of middleware
 router.post("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
   const validator = jsonschema.validate(
       req.body,
@@ -53,7 +53,7 @@ router.post("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
  *
  * Authorization required: login, admin
  **/
-
+//TODO: use one piece of middleware
 router.get("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
   const users = await User.findAll();
   return res.json({ users });
@@ -64,9 +64,9 @@ router.get("/", ensureLoggedIn, ensureAdmin, async function (req, res, next) {
  *
  * Returns { username, firstName, lastName, isAdmin }
  *
- * Authorization required: login, admin, logged in user
+ * Authorization required: login, admin, logged-in user
  **/
-
+//TODO: use one piece of middleware
 router.get("/:username",
 ensureLoggedIn,
 ensureCorrectUserOrAdmin,
@@ -83,9 +83,9 @@ async function (req, res, next) {
  *
  * Returns { username, firstName, lastName, email, isAdmin }
  *
- * Authorization required: login, admin
+ * Authorization required: login, admin, logged-in user
  **/
-
+//TODO: use one piece of middleware
 router.patch("/:username",
 ensureLoggedIn,
 ensureCorrectUserOrAdmin,
@@ -107,9 +107,9 @@ async function (req, res, next) {
 
 /** DELETE /[username]  =>  { deleted: username }
  *
- * Authorization required: login
+ * Authorization required: login, admin, correct user
  **/
-
+//TODO: use one piece of middleware
 router.delete("/:username",
 ensureLoggedIn,
 ensureCorrectUserOrAdmin,

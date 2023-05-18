@@ -4,7 +4,7 @@ const request = require("supertest");
 
 const db = require("../db");
 const app = require("../app");
-
+//TODO: change u4Token to adminToken
 const {
   commonBeforeAll,
   commonBeforeEach,
@@ -30,7 +30,7 @@ describe("POST /companies", function () {
     numEmployees: 10,
   };
 
-  test("ok for users", async function () {
+  test("ok for admin", async function () {
     const resp = await request(app)
         .post("/companies")
         .send(newCompany)
@@ -41,7 +41,7 @@ describe("POST /companies", function () {
     });
   });
 
-  test("unauthorized users", async function () {
+  test("unauthorized for non-admin", async function () {
     const resp = await request(app)
         .post("/companies")
         .send(newCompany)
@@ -52,7 +52,7 @@ describe("POST /companies", function () {
     );
   });
 
-  test("bad request with missing data", async function () {
+  test("bad request with missing data as admin", async function () {
     const resp = await request(app)
         .post("/companies")
         .send({
@@ -69,7 +69,7 @@ describe("POST /companies", function () {
     );
   });
 
-  test("bad request with invalid data", async function () {
+  test("bad request with invalid data as admin", async function () {
     const resp = await request(app)
         .post("/companies")
         .send({
@@ -80,6 +80,7 @@ describe("POST /companies", function () {
     expect(resp.statusCode).toEqual(400);
   });
 });
+//TODO: write tests ^ above with non-admin
 
 /************************************** GET /companies */
 
@@ -205,7 +206,7 @@ describe("GET /companies/:handle", function () {
 /************************************** PATCH /companies/:handle */
 
 describe("PATCH /companies/:handle", function () {
-  test("works for users", async function () {
+  test("works for admin", async function () {
     const resp = await request(app)
         .patch(`/companies/c1`)
         .send({
@@ -231,6 +232,7 @@ describe("PATCH /companies/:handle", function () {
         });
     expect(resp.statusCode).toEqual(401);
   });
+  //TODO: make above test for non-admin user
 
   test("not found on no such company", async function () {
     const resp = await request(app)
@@ -262,11 +264,12 @@ describe("PATCH /companies/:handle", function () {
     expect(resp.statusCode).toEqual(400);
   });
 });
+//TODO: do versions above for non-admins and unauth user
 
 /************************************** DELETE /companies/:handle */
 
 describe("DELETE /companies/:handle", function () {
-  test("works for users", async function () {
+  test("works for admin", async function () {
     const resp = await request(app)
         .delete(`/companies/c1`)
         .set("authorization", `Bearer ${u4Token}`);
@@ -278,6 +281,7 @@ describe("DELETE /companies/:handle", function () {
         .delete(`/companies/c1`);
     expect(resp.statusCode).toEqual(401);
   });
+  //TODO: add test for non-admin user
 
   test("not found for no such company", async function () {
     const resp = await request(app)
@@ -286,4 +290,5 @@ describe("DELETE /companies/:handle", function () {
     expect(resp.statusCode).toEqual(404);
   });
 });
+//TODO: delete company that does not exist for all three user combos
 

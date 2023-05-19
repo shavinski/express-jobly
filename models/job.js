@@ -16,23 +16,13 @@ class Job {
      * */
 
     static async create({ title, salary, equity, company_handle }) {
-      //FIXME: change duplicate HANDLE to job ID
-      // const duplicateCheck = await db.query(`
-      //     SELECT company_handle
-      //     FROM jobs
-      //     WHERE id = $1`, [id]);
-
-      // if (duplicateCheck.rows[0])
-      //   throw new BadRequestError(`Duplicate job: ${company_handle}`);
-
       const result = await db.query(`
                   INSERT INTO jobs (title,
                                          salary,
                                          equity,
                                          company_handle)
                   VALUES ($1, $2, $3, $4)
-                  RETURNING
-                            title,
+                  RETURNING title,
                             salary,
                             equity,
                             company_handle`, [

@@ -2,7 +2,7 @@
 
 const db = require("../db.js");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const Company = require("./company.js");
+const Job = require("./job.js");
 const {
   commonBeforeAll,
   commonBeforeEach,
@@ -15,39 +15,38 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
+
 /************************************** create */
-describe("create", function () {
-  const newCompany = {
-    handle: "new",
-    name: "New",
-    description: "New Description",
-    numEmployees: 1,
-    logoUrl: "http://new.img",
+describe("create new job", function () {
+  const newJob = {
+    title: "new",
+    salary: 107000,
+    equity: .068,
+    companyHandle: "c1"
   };
 
   test("works", async function () {
-    let company = await Company.create(newCompany);
-    expect(company).toEqual(newCompany);
+    let job = await Job.create(newJob);
+    expect(job).toEqual(newJob);
 
     const result = await db.query(
-          `SELECT handle, name, description, num_employees, logo_url
-           FROM companies
-           WHERE handle = 'new'`);
+          `SELECT title, salary, equity, companyHandle
+           FROM jobs
+           WHERE company_handle = 'c1'`);
     expect(result.rows).toEqual([
       {
-        handle: "new",
-        name: "New",
-        description: "New Description",
-        num_employees: 1,
-        logo_url: "http://new.img",
+        title: "new",
+        salary: 107000,
+        equity: .068,
+        companyHandle: "c1"
       },
     ]);
   });
 
   test("bad request with dupe", async function () {
     try {
-      await Company.create(newCompany);
-      await Company.create(newCompany);
+      await Job.create(newJob);
+      await Job.create(newJob);
       throw new Error("fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -55,16 +54,17 @@ describe("create", function () {
   });
 });
 
+// title, salary, equity, companyHandle
 /************************************** _whereClauseGen */
 describe("_whereClauseGen", function()  {
   test("returns correct object with all params passed in",
   function () {
-    let whereClause = Company._whereClauseGen(5, 50, "Rithm");
+    let whereClause = Job._whereClauseGen('dev', 150000, .50, 'c1');
     expect(whereClause).toEqual(
       {
         where:
-        'WHERE num_employees >= $1 AND num_employees <= $2 AND name ILIKE $3',
-        values: [ 5, 50, '%Rithm%' ]
+        'WHERE title ILIKE $1 AND salary = $2 AND equity $3 and company_handle ILIKE $4',
+        values: [ "%dev%", 150000, .50, "%c1%" ]
       }
     )
   });
@@ -73,17 +73,6 @@ describe("_whereClauseGen", function()  {
       let whereClause = Company._whereClauseGen();
       expect(whereClause).toEqual(
         { where: '', values: [] }
-      )
-  });
-  
-  test("returns correct object with only ints passed in", 
-  function () {
-      let whereClause = Company._whereClauseGen(1, 20);
-      expect(whereClause).toEqual(
-        {
-          where: 'WHERE num_employees >= $1 AND num_employees <= $2',
-          values: [ 1, 20 ]
-        }
       )
   });
 });

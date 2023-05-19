@@ -3,6 +3,7 @@
 const db = require("../db.js");
 const { BadRequestError, NotFoundError } = require("../expressError");
 const Job = require("./job.js");
+const Company = require("./company.js");
 const {
   commonBeforeAll,
   commonBeforeEach,
@@ -15,14 +16,14 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
-
+//FIXME: handle job creation test
 /************************************** create */
 describe("create new job", function () {
   const newJob = {
     title: "new",
     salary: 107000,
     equity: .068,
-    companyHandle: "c1"
+    company_handle: "c1"
   };
 
   test("works", async function () {
@@ -30,7 +31,7 @@ describe("create new job", function () {
     expect(job).toEqual(newJob);
 
     const result = await db.query(
-          `SELECT title, salary, equity, companyHandle
+          `SELECT title, salary, equity, company_handle
            FROM jobs
            WHERE company_handle = 'c1'`);
     expect(result.rows).toEqual([
@@ -38,7 +39,7 @@ describe("create new job", function () {
         title: "new",
         salary: 107000,
         equity: .068,
-        companyHandle: "c1"
+        company_handle: "c1"
       },
     ]);
   });
@@ -63,7 +64,7 @@ describe("_whereClauseGen", function()  {
     expect(whereClause).toEqual(
       {
         where:
-        'WHERE title ILIKE $1 AND salary = $2 AND equity $3 and company_handle ILIKE $4',
+        'WHERE title ILIKE $1 AND salary = $2 AND equity = $3 and company_handle ILIKE $4',
         values: [ "%dev%", 150000, .50, "%c1%" ]
       }
     )

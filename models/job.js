@@ -52,7 +52,7 @@ class Job {
           SELECT title,
                  salary,
                  equity,
-                 company_handle AS "companyHandle",
+                 company_handle AS "companyHandle"
           FROM jobs
           ${where}
           ORDER BY title`,
@@ -116,8 +116,8 @@ class Job {
           SELECT id,
                  title,
                  salary,
-                 equity
-                 company_handle AS "companyHandle",
+                 equity,
+                 company_handle AS "companyHandle"
           FROM jobs
           WHERE id = $1`, [id]);
 

@@ -31,7 +31,16 @@
    ```sh
    npm install 
    ```
-3. Start the local server
+3. Set up a database with dummy data (PSQL)
+   ```sh
+   psql
+   CREATE DATABASE jobly;
+   (ctrl+d or cmd+d) 
+   GO TO PROJECT DIRECTORY RUN:
+   psql -f jobly-schema.sql
+   psql -f jobly-seed.sql
+   ```
+4. Start the local server
    ```sh
    node server.js
    ```

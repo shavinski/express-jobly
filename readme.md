@@ -42,7 +42,14 @@
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] 
+- [x] Add filtering for companies
+- [x] Add proper authorization to routes
+    - [x] Authorization for companies
+    - [x] Authorization for users
+- [x] Add job models, routes, tests
+- [ ] Add job application logic
+- [ ] Add technology requirements for jobs
+- [ ] Add technology skills for users 
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

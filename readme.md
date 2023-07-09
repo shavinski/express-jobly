@@ -36,7 +36,7 @@
    psql
    CREATE DATABASE jobly;
    (ctrl+d or cmd+d) 
-   GO TO PROJECT DIRECTORY RUN:
+   GO TO PROJECT DIRECTORY AND RUN:
    psql -f jobly-schema.sql
    psql -f jobly-seed.sql
    ```
